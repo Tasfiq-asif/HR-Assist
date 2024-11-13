@@ -2,7 +2,7 @@ import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Too
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 const pages = ["Dashboard", "Contact Us"];
@@ -26,10 +26,7 @@ const Navbar = () => {
     const handleCloseUserMenu = () => {
       setAnchorElUser(null);
     };
-    const handleLogin = () => {
-      // Redirect to /login page
-      Navigate("/login");
-    };
+   
 
     const handleLogout = () => {
       setIsLoggedIn(false);
