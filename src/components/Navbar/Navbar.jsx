@@ -35,7 +35,7 @@ const Navbar = () => {
 
     return (
       <AppBar position="sticky">
-        <Container>
+        <Container >
           <Toolbar disableGutters>
             <ContentPasteIcon
               sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
