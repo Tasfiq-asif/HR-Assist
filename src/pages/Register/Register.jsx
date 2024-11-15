@@ -2,11 +2,24 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAuth from "../../hooks/useAuth";
-import { Box, Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+ 
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
 import uploadImage from "../../utils/uploadImage";
-import toast from "react-hot-toast";
-
+import { toast } from "react-hot-toast";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +36,14 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
-  const { signInWithGoogle, createUser, updateUserProfile,loading } = useAuth();
+  const {
+    signInWithGoogle,
+    createUser,
+    updateUserProfile,
+    loading,
+    logOut,
+    setLoading,
+  } = useAuth();
   const location = useLocation();
   const from = location.state?.from || "/";
 
@@ -41,7 +61,7 @@ const Register = () => {
       toast.success("Sign In Successful");
       navigate(from);
     } catch (err) {
-      toast.error(err?.message);
+      toast.error(err?.message || "An error occurred during sign-in.");
     }
   };
 
@@ -57,42 +77,70 @@ const Register = () => {
     tempErrors.bankAccountNo = bankAccountNo
       ? ""
       : "Bank account number is required";
-  
+
     tempErrors.designation = designation ? "" : "Designation is required";
     setErrors(tempErrors);
     return Object.values(tempErrors).every((error) => error === "");
   };
 
-const handleSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (validate()) {
       try {
-        // Upload the photo to ImgBB if a file is selected
         let photoUrl = "";
         if (photo) {
-          photoUrl = await uploadImage(photo);
+          try {
+            photoUrl = await uploadImage(photo);
+          } catch {
+            toast.error("Image upload failed. Please try again.");
+            return; // Exit early if image upload fails
+          }
         }
 
         // Create the user with email and password
-        await createUser(email, password);
-        await updateUserProfile(name);
-        // Prepare user data to send to backend
-        const userData = {
-          email,
-          name,
-          phone,
-          role,
-          bank_account_no: bankAccountNo,
-          designation,
-          photo: photoUrl, // The uploaded photo URL from ImgBB
-        };
+        try {
+          const userCredential = await createUser(email, password);
 
-        // Send user data to the backend
-        await axiosPublic.post("/user", userData);
-        toast.success("User created successfully");
-        navigate("/login");
+          if (userCredential?.user?.email) {
+            // Update the user's profile with the name
+            await updateUserProfile(name);
+
+            // Prepare user data
+            const userData = {
+              email,
+              name,
+              phone,
+              role,
+              bank_account_no: bankAccountNo,
+              designation,
+              photo: photoUrl,
+            };
+
+            // Send user data to the backend
+            await axiosPublic.post("/user", userData);
+
+            // Log out after user creation (if needed for your flow)
+            await logOut();
+
+            toast.success("User created successfully!");
+            navigate("/login");
+          }
+        } catch (err) {
+          console.error("Error during user creation:", err); // Log the error details here
+          toast.error(
+            err.code === "auth/email-already-in-use"
+              ? "This email is already in use. Please try another email."
+              : err?.message || "An error occurred during registration."
+          );
+          setLoading(false)
+        }
       } catch (err) {
-        toast.error(err?.message);
+        // Catch any other errors (e.g., network issues, axios failures, etc.)
+        console.error("Unexpected error:", err); // Log any unexpected errors
+        toast.error(
+          err?.message || "An unexpected error occurred. Please try again."
+        );
+        setLoading(false);
       }
     }
   };
@@ -240,70 +288,47 @@ const handleSubmit = async (event) => {
               variant="contained"
               component="label"
               fullWidth
-              sx={{ mb: 3, mr: photoPreview ? 2 : 0 }} // Add margin-right to create space between button and image
+              sx={{ mb: 3 }}
             >
               Upload Photo
-              <input type="file" hidden onChange={handlePhotoChange} />
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handlePhotoChange}
+              />
             </Button>
-
-            {/* Display thumbnail if photo is selected */}
             {photoPreview && (
-              <Box display={"flex"} alignItems={"center"} mb={3}>
-                <img
-                  src={photoPreview}
-                  alt="Photo Preview"
-                  style={{
-                    width: 40,
-                    height: 40,
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                  }}
-                />
-              </Box>
+              <Box
+                component="img"
+                src={photoPreview}
+                alt="Preview"
+                sx={{ width: 40, height: 40, borderRadius: "50%", ml: 2 }}
+              />
             )}
           </Box>
+
           <Button
-            type="submit"
             variant="contained"
             color="primary"
             fullWidth
-            sx={{ padding: "10px", mb: 2 }}
+            type="submit"
+            sx={{ mb: 3 }}
           >
             Register
           </Button>
-        </form>
 
-        <Button
-          type="button"
-          variant="contained"
-          color="secondary"
-          fullWidth
-          sx={{
-            padding: "10px",
-            mb: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          onClick={handleGoogleSignIn}
-        >
-          <Google sx={{ mr: 1 }} />
-          Sign In with Google
-        </Button>
-
-        <Typography variant="body2" align="center" color="textSecondary">
-          Already have an account?
-          <a
-            href="/login"
-            style={{
-              color: "#3f51b5",
-              textDecoration: "none",
-              marginLeft: "5px",
-            }}
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            onClick={handleGoogleSignIn}
+            sx={{ mb: 3 }}
           >
-            Log in
-          </a>
-        </Typography>
+            <Google sx={{ mr: 1 }} />
+            Sign Up with Google
+          </Button>
+        </form>
       </Paper>
     </Box>
   );

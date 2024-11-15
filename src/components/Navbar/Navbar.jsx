@@ -11,7 +11,6 @@ const pages = ["Dashboard", "Contact Us"];
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { user, loading, logOut } = useAuth();
 
     const handleOpenNavMenu = (event) => {
@@ -33,7 +32,7 @@ const Navbar = () => {
     const handleLogout = () => {
       logOut(); // Close menu after logout
     };
-    console.log(user)
+    console.log(user?.photoURL)
     return (
       <AppBar position="sticky">
         <Container>
@@ -136,13 +135,15 @@ const Navbar = () => {
               ))}
             </Box>
             <Box sx={{ flexGrow: 0 }}>
-              { user ? (
+              {user ? (
                 <>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         alt="User Avatar"
-                        src="/static/images/avatar/2.jpg"
+                        src={
+                          user?.photoURL || "/static/images/avatar/default.jpg"
+                        } // Default image if no photoURL
                       />
                     </IconButton>
                   </Tooltip>

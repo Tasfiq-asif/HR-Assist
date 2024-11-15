@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import { Alert, Box, Button, CircularProgress, IconButton, InputAdornment, Paper, Snackbar, TextField, Typography } from "@mui/material";
 import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
-
-
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { toast } from "react-hot-toast"; // Importing toast from react-hot-toast
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,9 +23,6 @@ const Login = () => {
   const { signIn, signInWithGoogle, loading, user, setLoading } = useAuth();
   const location = useLocation();
   const from = location.state?.from || "/";
-   const [snackbarOpen, setSnackbarOpen] = useState(false);
-   const [snackbarMessage, setSnackbarMessage] = useState("");
-   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 
@@ -41,35 +46,28 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      setSnackbarMessage("Sign In Successful");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      toast.success("Sign In Successful"); // Using React Hot Toast for success
       navigate(from);
     } catch (err) {
-      setSnackbarMessage(err?.message || "An error occurred");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+      toast.error(err?.message || "An error occurred"); // Using React Hot Toast for error
     }
   };
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  if (validate()) {
-    setLoading(true);
-    try {
-      await signIn(email, password);
-      setSnackbarMessage("Sign In Successful");
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
-      navigate(from);
-    } catch (err) {
-      setSnackbarMessage(err?.message || "An error occurred");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    } finally {
-      setLoading(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (validate()) {
+      setLoading(true);
+      try {
+        await signIn(email, password);
+        toast.success("Sign In Successful"); // Success toast
+        navigate(from);
+      } catch (err) {
+        toast.error(err?.message || "An error occurred"); // Error toast
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-};
+  };
 
   if (loading) {
     return (
@@ -171,19 +169,6 @@ const handleSubmit = async (event) => {
           </a>
         </Typography>
       </Paper>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

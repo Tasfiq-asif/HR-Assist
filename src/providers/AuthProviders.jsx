@@ -36,8 +36,19 @@ const AuthProviders = ({ children }) => {
   };
   const signInWithGoogle = async () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      // Now get the token from your backend
+      await getToken(user.email);
+    } catch (error) {
+      toast.error("Google sign-in failed");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   const resetPassword = (email) => {
     setLoading(true);
@@ -71,13 +82,19 @@ const AuthProviders = ({ children }) => {
   };
 
   const getToken = async (email) => {
-    const { data } = await axios.post(
-      `${import.meta.env.VITE_API_URL}/jwt`,
-      { email },
-      { withCredentials: true }
-    );
-    return data;
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/jwt`,
+        { email },
+        { withCredentials: true }
+      );
+      return data;
+    } catch (error) {
+      toast.error("Failed to fetch JWT");
+      throw error;
+    }
   };
+
 
   //onAuthStateChange
   useEffect(() => {
