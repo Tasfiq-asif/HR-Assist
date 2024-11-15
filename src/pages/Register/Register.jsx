@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAuth from "../../hooks/useAuth";
-import { Box, Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
 import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
 import uploadImage from "../../utils/uploadImage";
 import toast from "react-hot-toast";
@@ -19,10 +19,11 @@ const Register = () => {
 
   const [designation, setDesignation] = useState("");
   const [photo, setPhoto] = useState(null); // For file upload
+  const [photoPreview, setPhotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
-  const { signInWithGoogle, createUser, updateUserProfile } = useAuth();
+  const { signInWithGoogle, createUser, updateUserProfile,loading } = useAuth();
   const location = useLocation();
   const from = location.state?.from || "/";
 
@@ -95,6 +96,30 @@ const handleSubmit = async (event) => {
       }
     }
   };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    setPhoto(file);
+    if (file) {
+      // Generate a URL for the image file to show as a preview
+      const fileURL = URL.createObjectURL(file);
+      setPhotoPreview(fileURL);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        bgcolor="#f4f6f8"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -210,19 +235,33 @@ const handleSubmit = async (event) => {
             sx={{ mb: 3 }}
           />
 
-          <Button
-            variant="contained"
-            component="label"
-            fullWidth
-            sx={{ mb: 3 }}
-          >
-            Upload Photo
-            <input
-              type="file"
-              hidden
-              onChange={(e) => setPhoto(e.target.files[0])}
-            />
-          </Button>
+          <Box display="flex" alignItems="center" mb={2}>
+            <Button
+              variant="contained"
+              component="label"
+              fullWidth
+              sx={{ mb: 3, mr: photoPreview ? 2 : 0 }} // Add margin-right to create space between button and image
+            >
+              Upload Photo
+              <input type="file" hidden onChange={handlePhotoChange} />
+            </Button>
+
+            {/* Display thumbnail if photo is selected */}
+            {photoPreview && (
+              <Box display={"flex"} alignItems={"center"} mb={3}>
+                <img
+                  src={photoPreview}
+                  alt="Photo Preview"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
           <Button
             type="submit"
             variant="contained"

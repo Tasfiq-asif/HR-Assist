@@ -3,6 +3,7 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 
 const pages = ["Dashboard", "Contact Us"];
@@ -11,6 +12,7 @@ const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { user, loading, logOut } = useAuth();
 
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -29,13 +31,12 @@ const Navbar = () => {
    
 
     const handleLogout = () => {
-      setIsLoggedIn(false);
-      handleCloseUserMenu(); // Close menu after logout
+      logOut(); // Close menu after logout
     };
-
+    console.log(user)
     return (
       <AppBar position="sticky">
-        <Container >
+        <Container>
           <Toolbar disableGutters>
             <ContentPasteIcon
               sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
@@ -135,11 +136,7 @@ const Navbar = () => {
               ))}
             </Box>
             <Box sx={{ flexGrow: 0 }}>
-              {!isLoggedIn ? (
-                <Button component={Link} to="/login" sx={{ color: "white" }}>
-                  Login
-                </Button>
-              ) : (
+              { user ? (
                 <>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -173,6 +170,10 @@ const Navbar = () => {
                     </MenuItem>
                   </Menu>
                 </>
+              ) : (
+                <Button component={Link} to="/login" sx={{ color: "white" }}>
+                  Login
+                </Button>
               )}
             </Box>
           </Toolbar>
