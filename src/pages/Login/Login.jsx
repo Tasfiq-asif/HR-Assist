@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { toast } from "react-hot-toast"; // Importing toast from react-hot-toast
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,14 +26,12 @@ const Login = () => {
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 
-  // Redirect if the user is already logged in
   useEffect(() => {
     if (user) {
       navigate(from);
     }
   }, [user, navigate, from]);
 
-  // Basic validation
   const validate = () => {
     let tempErrors = {};
     tempErrors.email = /\S+@\S+\.\S+/.test(email) ? "" : "Enter a valid email";
@@ -45,11 +43,29 @@ const Login = () => {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signInWithGoogle();
-      toast.success("Sign In Successful"); // Using React Hot Toast for success
+      setLoading(true);
+      const result = await signInWithGoogle();
+      console.log("Google sign-in result:", result);
+
+      if (!result || !result.user) {
+        throw new Error("Failed to retrieve user data from Google sign-in.");
+      }
+
+      const { email, displayName, photoURL } = result.user;
+
+      if (!email || !displayName) {
+        throw new Error("Google user data is incomplete.");
+      }
+
+      console.log("Google User:", { email, displayName, photoURL });
+
+      toast.success("Sign In Successful");
       navigate(from);
     } catch (err) {
-      toast.error(err?.message || "An error occurred"); // Using React Hot Toast for error
+      console.error("Error during Google Sign-In:", err);
+      toast.error(err.message || "An error occurred during sign-in");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,10 +75,10 @@ const Login = () => {
       setLoading(true);
       try {
         await signIn(email, password);
-        toast.success("Sign In Successful"); // Success toast
+        toast.success("Sign In Successful");
         navigate(from);
       } catch (err) {
-        toast.error(err?.message || "An error occurred"); // Error toast
+        toast.error(err?.message || "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -83,7 +99,6 @@ const Login = () => {
     );
   }
 
-  // Render the login form only if user is not logged in
   if (user) return null;
 
   return (

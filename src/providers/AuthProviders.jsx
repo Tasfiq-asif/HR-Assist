@@ -38,16 +38,48 @@ const AuthProviders = ({ children }) => {
     setLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
+      console.log("Google Sign-In Result:", result);
+
+      if (!result || !result.user) {
+        throw new Error("Failed to retrieve user data from Google sign-in.");
+      }
+
       const user = result.user;
-      // Now get the token from your backend
-      await getToken(user.email);
+      const { email, displayName } = user;
+
+      if (!email || !displayName) {
+        throw new Error("Google user data is incomplete.");
+      }
+
+      console.log("Google User:", { email, displayName });
+
+      // Fetch JWT from backend
+      const token = await getToken(email);
+      console.log("JWT Token:", token);
+
+      // Save user data in the backend
+      const userData = { email, name: displayName, role: "Employee" };
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/user`,
+        userData,
+        { withCredentials: true }
+      );
+      console.log("User registration response:", response.data);
+
+      setUser(user);
+      toast.success("Google sign-in successful!");
+
+      return result; // Return the result
     } catch (error) {
-      toast.error("Google sign-in failed");
-      throw error;
+      toast.error(error.message || "Google sign-in failed");
+      console.error("Google sign-in error:", error);
+      throw error; // Re-throw the error to be caught in the component
     } finally {
       setLoading(false);
     }
   };
+
+
 
 
   const resetPassword = (email) => {

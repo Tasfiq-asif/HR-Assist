@@ -51,19 +51,32 @@ const Register = () => {
 
   const handleGoogleSignIn = async () => {
     try {
+      setLoading(true);
       const result = await signInWithGoogle();
-      const userInfo = {
-        email: result.user?.email,
-        name: result.user?.displayName,
-        role: "Employee",
-      };
-      await axiosPublic.post("/user", userInfo);
+      console.log("Google sign-in result:", result);
+
+      if (!result || !result.user) {
+        throw new Error("Failed to retrieve user data from Google sign-in.");
+      }
+
+      const { email, displayName, photoURL } = result.user;
+
+      if (!email || !displayName) {
+        throw new Error("Google user data is incomplete.");
+      }
+
+      console.log("Google User:", { email, displayName, photoURL });
+
       toast.success("Sign In Successful");
       navigate(from);
     } catch (err) {
-      toast.error(err?.message || "An error occurred during sign-in.");
+      console.error("Error during Google Sign-In:", err);
+      toast.error(err.message || "An error occurred during sign-in");
+    } finally {
+      setLoading(false);
     }
   };
+
 
   // Validation
   const validate = () => {
@@ -303,7 +316,7 @@ const Register = () => {
                 component="img"
                 src={photoPreview}
                 alt="Preview"
-                sx={{ width: 40, height: 40, borderRadius: "50%", ml: 2 }}
+                sx={{ width: 40, height: 40, borderRadius: "50%", ml: 2,mb: 3 }}
               />
             )}
           </Box>
