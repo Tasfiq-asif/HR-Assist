@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import PrivateRoutes from "./PrivateRoutes";
 import Dashboard from "../layout/Dashboard";
+import Worksheet from "../pages/Worksheet/Worksheet";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,11 @@ const router = createBrowserRouter([
       <PrivateRoutes>
         <Dashboard/>
       </PrivateRoutes>
-    )
+    ),
+    children: [
+      {path: "work-sheet",
+      element: <Worksheet />,},
+    ]
     
   },
 ]);

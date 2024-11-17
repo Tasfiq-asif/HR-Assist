@@ -1,12 +1,14 @@
 
 import {
-  Drawer,
+
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Divider,
+
+  Box,
+
 } from "@mui/material";
 import {
   Home as HomeIcon,
@@ -15,17 +17,19 @@ import {
   People as EmployeesIcon,
   Logout as LogoutIcon,
   Timeline as ProgressIcon,
+
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import useRoles from "../../hooks/useRoles";
+import useAuth from "../../hooks/useAuth";
 
-const drawerWidth = 240;
+const sidebarWidth = 240;
 
 const getMenuItems = (role) => {
   switch (role) {
     case "Employee":
       return [
-        { text: "Home", icon: <HomeIcon />, path: "/dashboard" },
+        { text: "Home", icon: <HomeIcon />, path: "/" },
         {
           text: "Work Sheet",
           icon: <WorkSheetIcon />,
@@ -40,7 +44,7 @@ const getMenuItems = (role) => {
       ];
     case "HR":
       return [
-        { text: "Home", icon: <HomeIcon />, path: "/dashboard" },
+        { text: "Home", icon: <HomeIcon />, path: "/" },
         {
           text: "Employee List",
           icon: <EmployeesIcon />,
@@ -68,41 +72,56 @@ const getMenuItems = (role) => {
   }
 };
 
-const SideBar = ({ open, onClose }) => {
+const SideBar = () => {
   const [role] = useRoles();
   const navigate = useNavigate();
   const menuItems = getMenuItems(role);
-  const handleMenuClick = (path) => {
-    navigate(path);
-    onClose(); // Close the sidebar after navigation
+   const { logOut } = useAuth();
+  const handleLogout = () => {
+    logOut(); // Close menu after logout
   };
+  // const handleMenuClick = (path) => {
+  //   navigate(path);
+  //   onClose(); // Close the sidebar after navigation
+  // };
 
   return (
-    <Drawer
+    <Box
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-        },
+        width: sidebarWidth,
+        height: "100vh",
+        backgroundColor: "#1e293b", // Sidebar background color
+        color: "#ffffff", // Text color
+        paddingTop: 2,
+        position: "fixed", // Make sidebar fixed
+        top: 0,
+        left: 0,
       }}
-      variant="persistent"
-      anchor="left"
-      open={open}
     >
       <List>
         {menuItems.map((item) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton onClick={() => navigate(item.path)}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemButton
+              onClick={() => {
+                if (item.text === "Logout") {
+                  handleLogout();
+                } else {
+                  navigate(item.path);
+                }
+              }}
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#475569",
+                },
+              }}
+            >
+              <ListItemIcon sx={{ color: "#ffffff" }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-      <Divider />
-    </Drawer>
+    </Box>
   );
 };
 

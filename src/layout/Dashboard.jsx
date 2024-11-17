@@ -1,27 +1,23 @@
 import { Box, CssBaseline } from "@mui/material";
-import Appbar from "../components/AppBar/Appbar";
+
 import SideBar from "../components/SideBar/SideBar";
-import { useState } from "react";
+
 import { Outlet } from "react-router-dom";
 
-
+const sidebarWidth = 240;
 const Dashboard = () => {
-    const [open, setOpen] = useState(false);
-    const handleDrawerToggle = () => {
-      setOpen(!open);
-    };
+
     return (
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <Appbar open={open} onDrawerToggle={handleDrawerToggle} />
-        <SideBar open={open} onClose={handleDrawerToggle} />
+        {/* <Appbar open={open} onDrawerToggle={handleDrawerToggle} /> */}
+        <SideBar />
         <Box
           component="main"
           sx={{
             flexGrow: 1,
             padding: 3,
-            transition: "margin 0.3s ease",
-            marginLeft: open ? 240 : 0,
+            marginLeft: `${sidebarWidth}px`,
           }}
         >
           <Outlet />

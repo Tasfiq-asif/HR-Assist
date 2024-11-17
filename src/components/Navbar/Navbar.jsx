@@ -11,7 +11,7 @@ const pages = ["Dashboard", "Contact Us"];
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const { user, loading, logOut } = useAuth();
+    const { user,  logOut } = useAuth();
 
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
