@@ -4,6 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import useFetchUserData from "../../hooks/useFetchUserData";
 
 
 const pages = ["Dashboard", "Contact Us"];
@@ -12,6 +13,7 @@ const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
     const { user,  logOut } = useAuth();
+    const { userData, loading } = useFetchUserData();
 
     const handleOpenNavMenu = (event) => {
       setAnchorElNav(event.currentTarget);
@@ -32,7 +34,7 @@ const Navbar = () => {
     const handleLogout = () => {
       logOut(); // Close menu after logout
     };
-    console.log(user?.photoURL)
+   
     return (
       <AppBar position="sticky">
         <Container>
@@ -142,7 +144,10 @@ const Navbar = () => {
                       <Avatar
                         alt="User Avatar"
                         src={
-                          user?.photoURL || "/static/images/avatar/default.jpg"
+                          loading
+                            ? "/static/images/avatar/loading.jpg" // Optional: show a loading avatar
+                            : userData?.photo ||
+                              "/static/images/avatar/default.jpg" // Use fetched photo or default
                         } // Default image if no photoURL
                       />
                     </IconButton>
