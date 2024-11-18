@@ -21,7 +21,7 @@ const Worksheet = () => {
      const fetchWorkEntries = async()=>{
         try {
             
-            const response = await axiosSecure(`/api/work-entries/${user.id}`);
+            const response = await axiosSecure(`worksheet/${user.email}`);
             setWorkEntries(response.data);
         } catch (error) {
             console.error("Error fetching work entries:", error);
@@ -29,7 +29,7 @@ const Worksheet = () => {
      }
      fetchWorkEntries();
     }
-    ,[user.id])
+    ,[user.email])
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
@@ -38,10 +38,10 @@ const Worksheet = () => {
           task,
           hours: parseFloat(hours),
           date: date.format("YYYY-MM-DD"),
-          employeeId: user.id,
+          employeeEmail: user.email,
         };
         try {
-      const response = await axiosSecure.post("/api/work-entries", newEntry);
+      const response = await axiosSecure.post("/work-entries", newEntry);
       setWorkEntries([response.data, ...workEntries]);
       setTask("");
       setHours("");
@@ -52,7 +52,7 @@ const Worksheet = () => {
   };
 
 
-
+console.log(workEntries)
     return (
     <Box sx={{ padding: 2 }}>
       {/* Form */}
