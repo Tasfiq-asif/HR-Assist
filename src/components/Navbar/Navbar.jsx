@@ -34,6 +34,8 @@ const Navbar = () => {
     const handleLogout = () => {
       logOut(); // Close menu after logout
     };
+
+    console.log({user})
    
     return (
       <AppBar position="sticky">

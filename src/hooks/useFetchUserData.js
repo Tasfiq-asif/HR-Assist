@@ -16,7 +16,7 @@ const useFetchUserData = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const response = await axiosSecure.get(`http://localhost:8000/users/${user.email}`);
+        const response = await axiosSecure.get(`http://localhost:8000/users/${user._id}`);
         
         const dbUser = response.data
         const combinedUser = {
@@ -34,7 +34,7 @@ const useFetchUserData = () => {
     };
 
     fetchUserData();
-  }, [user.email, user.photoURL]);
+  }, [user?.email, user?.photoURL]);
 
   return { userData, loading, error };
 };

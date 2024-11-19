@@ -1,9 +1,14 @@
+import Banner from "../../components/Banner/BAnner";
+import Testimonials from "../../components/Testimonial/Testimonial";
+import Services from "../Services/Services";
 
 
 const Home = () => {
     return (
         <div>
-            Home
+            <Banner/>
+            <Services/>
+            <Testimonials/>
         </div>
     );
 };

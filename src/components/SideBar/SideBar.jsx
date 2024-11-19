@@ -63,7 +63,7 @@ const getMenuItems = (role) => {
         {
           text: "Employees",
           icon: <EmployeesIcon />,
-          path: "/dashboard/employees",
+          path: "/dashboard/admin-dashboard",
         },
         { text: "Logout", icon: <LogoutIcon />, path: "/logout" },
       ];

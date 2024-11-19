@@ -8,39 +8,40 @@ import { Box, Button, MenuItem, TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import WorksheetTable from "../../components/WorkSheetTable/WorksheetTable";
 
-
 const tasksOptions = ["Sales", "Support", "Content", "Paper-work"];
 const Worksheet = () => {
-    const {user} = useAuth();
-    const [task,setTask] = useState();
-    const[hours,setHours] = useState();
-    const [date, setDate] = useState(dayjs());
-    const [workEntries, setWorkEntries] = useState([]);
+  const { user } = useAuth();
+  const [task, setTask] = useState("");
+  const [hours, setHours] = useState("");
+  const [date, setDate] = useState(dayjs());
+  const [workEntries, setWorkEntries] = useState([]);
 
-    useEffect(()=>{
-     const fetchWorkEntries = async()=>{
-        try {
-            
-            const response = await axiosSecure(`worksheet/${user.email}`);
-            setWorkEntries(response.data);
-        } catch (error) {
-            console.error("Error fetching work entries:", error);
-        }
-     }
-     fetchWorkEntries();
+  useEffect(() => {
+    const fetchWorkEntries = async () => {
+      try {
+        const response = await axiosSecure(`worksheet/${user.email}`);
+        setWorkEntries(response.data);
+      } catch (error) {
+        console.error("Error fetching work entries:", error);
+      }
+    };
+    if(user){
+      fetchWorkEntries();
     }
-    ,[user.email])
+  }, [user, user.email]);
 
-    const handleSubmit = async(e)=>{
-        e.preventDefault();
+  
 
-        const newEntry = {
-          task,
-          hours: parseFloat(hours),
-          date: date.format("YYYY-MM-DD"),
-          employeeEmail: user.email,
-        };
-        try {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const newEntry = {
+      task,
+      hours: parseFloat(hours),
+      date: date.format("YYYY-MM-DD"),
+      employeeEmail: user.email,
+    };
+    try {
       const response = await axiosSecure.post("/work-entries", newEntry);
       setWorkEntries([response.data, ...workEntries]);
       setTask("");
@@ -51,12 +52,14 @@ const Worksheet = () => {
     }
   };
 
-
-console.log(workEntries)
-    return (
+  console.log(workEntries);
+  return (
     <Box sx={{ padding: 2 }}>
       {/* Form */}
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", gap: "16px", alignItems: "center" }}
+      >
         {/* Task Dropdown */}
         <TextField
           select
@@ -102,7 +105,7 @@ console.log(workEntries)
       {/* Table Component */}
       <WorksheetTable workEntries={workEntries} />
     </Box>
-    );
+  );
 };
 
 export default Worksheet;

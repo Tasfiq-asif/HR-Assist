@@ -3,10 +3,11 @@ import useAuth from "../hooks/useAuth";
 import PropTypes from "prop-types";
 import { Box, CircularProgress } from "@mui/material";
 
-const PrivateRoutes = ({ children }) => {
+const PrivateRoutes = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
   const location = useLocation();
 
+  // Show a loading spinner while checking authentication
   if (loading)
     return (
       <Box
@@ -19,19 +20,24 @@ const PrivateRoutes = ({ children }) => {
       </Box>
     );
 
-  if (user) return children;
+ 
+  if (user && allowedRoles.includes(user.role)) {
+    return children; 
+  }
+
 
   return (
     <Navigate
-      to={"/login"}
-      state={{ from: location.pathname }}
+      to={"/"} 
+      state={{ from: location.pathname }} 
       replace={true}
-    ></Navigate>
+    />
   );
 };
 
 PrivateRoutes.propTypes = {
-  children: PropTypes.element,
+  children: PropTypes.element.isRequired,
+  allowedRoles: PropTypes.arrayOf(PropTypes.string).isRequired, // List of allowed roles
 };
 
 export default PrivateRoutes;

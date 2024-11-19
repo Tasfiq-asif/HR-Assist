@@ -34,9 +34,12 @@ const AuthProviders = ({ children }) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
+
+
   const signInWithGoogle = async () => {
     setLoading(true);
     try {
+      // Google sign-in process
       const result = await signInWithPopup(auth, googleProvider);
       console.log("Google Sign-In Result:", result);
 
@@ -51,9 +54,9 @@ const AuthProviders = ({ children }) => {
         throw new Error("Google user data is incomplete.");
       }
 
-      console.log("Google User:", { email, displayName });
+     
 
-      // Fetch JWT from backend
+      // Fetch JWT from backend for secure communication
       const token = await getToken(email);
       console.log("JWT Token:", token);
 
@@ -66,7 +69,23 @@ const AuthProviders = ({ children }) => {
       );
       console.log("User registration response:", response.data);
 
-      setUser(user);
+      // Fetch additional user details from the backend
+      const { data: userDetails } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/users/${email}`,
+        { withCredentials: true }
+      );
+      console.log("Backend user details:", userDetails);
+
+      // Merge Firebase and backend user details
+      const mergedUser = {
+        ...user, // Firebase user details
+        ...userDetails, // Backend user details (e.g., _id, role, etc.)
+      };
+
+      // Set the merged user state
+      setUser(mergedUser);
+
+      // Show success notification
       toast.success("Google sign-in successful!");
 
       return result; // Return the result
@@ -78,6 +97,7 @@ const AuthProviders = ({ children }) => {
       setLoading(false);
     }
   };
+
 
 
 
@@ -130,17 +150,42 @@ const AuthProviders = ({ children }) => {
 
   //onAuthStateChange
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    if (currentUser) {
+      try {
+        setLoading(true);
+
+        // Fetch JWT (if needed)
         await getToken(currentUser.email);
+
+        // Fetch additional user details from the backend
+        const { data: userDetails } = await axios.get(
+          `${import.meta.env.VITE_API_URL}/users/${currentUser.email}`,
+          { withCredentials: true }
+        );
+
+        // Merge Firebase and backend user details
+        const mergedUser = {
+          ...currentUser, // Firebase user details
+          ...userDetails, // Backend user details (e.g., _id, role, etc.)
+        };
+
+        setUser(mergedUser);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        toast.error("Failed to fetch user details");
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
+    } else {
+      setUser(null);
       setLoading(false);
-    });
-    return () => {
-      return unsubscribe();
-    };
-  }, []);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
 
   const authInfo = {
     user,
