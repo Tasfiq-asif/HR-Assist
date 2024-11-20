@@ -11,6 +11,7 @@ import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import PaymentHistory from "../pages/PaymentHistory/PaymentHistory";
 import DetailsPage from "../pages/DetailsPage/DetailsPage";
 import ProgressPage from "../pages/ProgressPage/ProgressPage";
+import ContactUs from "../pages/ContactUs/ContactUs";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,11 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
+      {
+        path: "/contact-us",
+        element: <ContactUs />,
+      },
+
     ],
   },
   {
