@@ -59,7 +59,7 @@ const getMenuItems = (role) => {
       ];
     case "Admin":
       return [
-        { text: "Home", icon: <HomeIcon />, path: "/dashboard" },
+        { text: "Home", icon: <HomeIcon />, path: "/" },
         {
           text: "Employees",
           icon: <EmployeesIcon />,

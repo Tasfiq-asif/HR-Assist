@@ -20,6 +20,8 @@ import {
 import { Check, Close } from "@mui/icons-material";
 import { axiosSecure } from "../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -27,6 +29,7 @@ const EmployeeList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+   const navigate = useNavigate();
 
   const fetchEmployees = async () => {
     try {
@@ -72,6 +75,13 @@ const EmployeeList = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i); // Last 10 years
 
+
+  const handleDetails = (email) => {
+  navigate(`/dashboard/details/${email}`);
+};
+
+
+
   return (
     <div>
       <TableContainer component={Paper}>
@@ -84,6 +94,7 @@ const EmployeeList = () => {
               <TableCell>Bank Account</TableCell>
               <TableCell>Salary</TableCell>
               <TableCell>Pay</TableCell>
+              <TableCell>Details</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -111,6 +122,14 @@ const EmployeeList = () => {
                     disabled={!employee.isVerified}
                   >
                     Pay
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleDetails(employee.email)}
+                  >
+                    Details
                   </Button>
                 </TableCell>
               </TableRow>

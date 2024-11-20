@@ -29,7 +29,7 @@ const AdminDashboard = () => {
     // Fetch the verified employees
     const fetchEmployees = async () => {
       try {
-        const response = await axiosSecure.get("/employees/verified"); // Using axiosSecure
+        const response = await axiosSecure.get("/verified-employees"); // Using axiosSecure
         setEmployees(response.data);
       } catch (error) {
         console.error("Error fetching employees:", error);
