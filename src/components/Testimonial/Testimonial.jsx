@@ -1,8 +1,9 @@
-// Testimonials.js
-
-import { Box, Typography, Paper } from "@mui/material";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import styles for carousel
+import { Box, Typography, Card, CardContent } from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
 
 const testimonials = [
   {
@@ -27,26 +28,71 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <Box sx={{ padding: 4, backgroundColor: "#e0e0e0" }}>
-      <Typography variant="h4" sx={{ textAlign: "center", marginBottom: 4 }}>
+    <Box
+      sx={{
+        padding: 6,
+        background: "linear-gradient(to right, #1B4242, #9EC8B9)",
+        color: "#ffffff",
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{
+          textAlign: "center",
+          marginBottom: 4,
+          fontWeight: "bold",
+          letterSpacing: 1.2,
+        }}
+      >
         What People Say About Us
       </Typography>
-      <Carousel>
+      <Swiper
+        modules={[Pagination, Autoplay]}
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 5000 }}
+        spaceBetween={30}
+        slidesPerView={1}
+        style={{ padding: "20px" }}
+        className="custom-swiper" // Add a custom class name
+      >
         {testimonials.map((testimonial, index) => (
-          <Paper
-            key={index}
-            sx={{ padding: 3, textAlign: "center", boxShadow: 3 }}
-          >
-            <Typography variant="h6">{testimonial.quote}</Typography>
-            <Typography
-              variant="subtitle1"
-              sx={{ fontStyle: "italic", marginTop: 2 }}
+          <SwiperSlide key={index}>
+            <Card
+              sx={{
+                maxWidth: 600,
+                margin: "10px auto",
+                backgroundColor: "#ffffff",
+                color: "#333",
+                borderRadius: 2,
+                boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              }}
             >
-              - {testimonial.name}, {testimonial.title}
-            </Typography>
-          </Paper>
+              <CardContent>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontStyle: "italic",
+                    marginBottom: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  "{testimonial.quote}"
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    color: "#1B4242",
+                  }}
+                >
+                  - {testimonial.name}, {testimonial.title}
+                </Typography>
+              </CardContent>
+            </Card>
+          </SwiperSlide>
         ))}
-      </Carousel>
+      </Swiper>
     </Box>
   );
 };

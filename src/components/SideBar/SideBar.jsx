@@ -65,12 +65,18 @@ const getMenuItems = (role) => {
           icon: <EmployeesIcon />,
           path: "/dashboard/admin-dashboard",
         },
+        {
+          text: "Messages",
+          icon: <WorkSheetIcon />, // Change this to an appropriate icon
+          path: "/dashboard/messages", // Path for the Messages page
+        },
         { text: "Logout", icon: <LogoutIcon />, path: "/logout" },
       ];
     default:
       return [];
   }
 };
+
 
 const SideBar = () => {
   const [role] = useRoles();

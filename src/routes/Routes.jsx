@@ -12,6 +12,7 @@ import PaymentHistory from "../pages/PaymentHistory/PaymentHistory";
 import DetailsPage from "../pages/DetailsPage/DetailsPage";
 import ProgressPage from "../pages/ProgressPage/ProgressPage";
 import ContactUs from "../pages/ContactUs/ContactUs";
+import Messages from "../pages/Messages/Messages";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "/contact-us",
+        path: "/contactus",
         element: <ContactUs />,
       },
 
@@ -86,6 +87,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoutes allowedRoles={["HR", "Admin"]}>
             <ProgressPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "messages",
+        element: (
+          <PrivateRoutes allowedRoles={["Admin"]}>
+            <Messages />
           </PrivateRoutes>
         ),
       },
