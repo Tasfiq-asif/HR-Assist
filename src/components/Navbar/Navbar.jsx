@@ -35,7 +35,7 @@ const Navbar = () => {
       logOut(); // Close menu after logout
     };
 
-    console.log({user})
+    console.log(user)
    
     return (
       <AppBar position="sticky">
@@ -148,7 +148,7 @@ const Navbar = () => {
                         src={
                           loading
                             ? "/static/images/avatar/loading.jpg" // Optional: show a loading avatar
-                            : userData?.photo ||
+                            : user?.photo || user?.photoURL ||
                               "/static/images/avatar/default.jpg" // Use fetched photo or default
                         } // Default image if no photoURL
                       />

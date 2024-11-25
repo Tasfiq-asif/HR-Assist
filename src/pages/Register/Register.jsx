@@ -98,6 +98,7 @@ const Register = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true)
     if (validate()) {
       try {
         let photoUrl = "";
@@ -158,15 +159,32 @@ const Register = () => {
     }
   };
 
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files[0];
-    setPhoto(file);
+
     if (file) {
-      // Generate a URL for the image file to show as a preview
-      const fileURL = URL.createObjectURL(file);
-      setPhotoPreview(fileURL);
+      // Start the loading spinner
+      setLoading(true);
+
+      try {
+        // Generate a URL for the image file to show as a preview
+        const fileURL = URL.createObjectURL(file);
+        setPhotoPreview(fileURL);
+        setPhoto(file);
+
+        // Simulate an async upload if needed (e.g., delay for testing)
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (err) {
+        toast.error("Failed to load the image preview.");
+        console.error("Error loading photo:", err);
+      } finally {
+        // Stop the loading spinner
+        setLoading(false);
+      }
     }
   };
+
+  console.log(loading)
 
   if (loading) {
     return (
@@ -316,7 +334,13 @@ const Register = () => {
                 component="img"
                 src={photoPreview}
                 alt="Preview"
-                sx={{ width: 40, height: 40, borderRadius: "50%", ml: 2,mb: 3 }}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  ml: 2,
+                  mb: 3,
+                }}
               />
             )}
           </Box>
@@ -326,9 +350,19 @@ const Register = () => {
             color="primary"
             fullWidth
             type="submit"
-            sx={{ mb: 3 }}
+            sx={{
+              mb: 3,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            disabled={loading} // Disable the button while loading
           >
-            Register
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Register"
+            )}
           </Button>
 
           <Button

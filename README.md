@@ -1,8 +1,43 @@
-# React + Vite
+# HR Management Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive HR management application that enables users to manage employees efficiently. This app supports role-based functionalities for employees, HR personnel, and admins.
 
-Currently, two official plugins are available:
+## Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: [HR Management App](https://hrassit-c91b1.web.app/)
+- **Backend**: [Server API](https://hrassist.vercel.app/)
+
+## Features
+
+### Employee
+- Register as an employee.
+- Log work hours.
+- View payment details.
+
+### HR
+- Verify registered users.
+- Manage employee payments.
+
+### Admin
+- Terminate employees.
+- Change user roles (Employee ↔ HR).
+
+## Tech Stack
+
+- **Authentication**: Firebase
+- **Database**: MongoDB
+- **UI Library**: Material-UI (MUI)
+- **Backend Framework**: Express.js
+
+## Installation and Setup
+
+### Prerequisites
+Ensure you have the following installed:
+- Node.js
+- npm (Node Package Manager)
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/your-repo/hr-management-app.git
+cd hr-management-app

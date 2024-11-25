@@ -76,7 +76,7 @@ const Testimonials = () => {
                     textAlign: "center",
                   }}
                 >
-                  "{testimonial.quote}"
+                  &quot;{testimonial.quote}&quot;
                 </Typography>
                 <Typography
                   variant="subtitle1"
