@@ -4,7 +4,7 @@ A comprehensive HR management application that enables users to manage employees
 
 ## Live Demo
 
-- **Frontend**: [HR Management App](https://hrassit-c91b1.web.app/)
+- **Live link**: [HR Management App](https://hrassit-c91b1.web.app/)
 - **Backend**: [Server API](https://hrassist.vercel.app/)
 
 ## Features
