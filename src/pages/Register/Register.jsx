@@ -172,8 +172,7 @@ const Register = () => {
         setPhotoPreview(fileURL);
         setPhoto(file);
 
-        // Simulate an async upload if needed (e.g., delay for testing)
-        // await new Promise((resolve) => setTimeout(resolve, 2000));
+      
       } catch (err) {
         toast.error("Failed to load the image preview.");
         console.error("Error loading photo:", err);
